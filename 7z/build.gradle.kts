@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -41,8 +42,39 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        prefabPublishing = true
+    }
+
+    prefab {
+        create("k7z"){
+            headers="src/main/cpp"
+        }
+    }
+
 }
 
 dependencies {
 
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.sissi.a7z"
+            artifactId = "k7z"
+            version = "1.0-SNAPSHOT"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+    repositories {
+        maven {
+            name="prj"
+            url = uri("${rootProject.projectDir}/build/repository")
+        }
+    }
 }

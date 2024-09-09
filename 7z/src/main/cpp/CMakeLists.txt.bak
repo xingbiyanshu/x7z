@@ -9,9 +9,7 @@ cmake_minimum_required(VERSION 3.22.1)
 # Since this is the top level CMakeLists.txt, the project name is also accessible
 # with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
 # build script scope).
-project("k7z")
-
-add_compile_options(-Wall -Wextra -Wexit-time-destructors -D_FILE_OFFSET_BITS=64 -D_7ZIP_ST -Oz)
+project("a7z")
 
 set(TARGET ${CMAKE_PROJECT_NAME})
 
@@ -82,12 +80,12 @@ set(SRC_EXTS
 )
 
 set(SRC_FILE_LIST
-        lzma/7zAlloc.c lzma/7zArcIn.c lzma/7zBuf2.c lzma/7zBuf.c lzma/7zCrc.c lzma/7zCrcOpt.c
-        lzma/7zDec.c lzma/7zFile.c lzma/7zStream.c lzma/Aes.c lzma/AesOpt.c lzma/Alloc.c lzma/Bcj2.c
-        lzma/Bra86.c lzma/Bra.c lzma/BraIA64.c lzma/CpuArch.c lzma/Delta.c lzma/LzFind.c
-        lzma/Lzma2Dec.c lzma/Lzma2Enc.c lzma/Lzma86Dec.c lzma/Lzma86Enc.c lzma/LzmaDec.c lzma/LzmaEnc.c
-        lzma/LzmaLib.c lzma/Ppmd7.c lzma/Ppmd7Dec.c lzma/Ppmd7Enc.c lzma/Sha256.c lzma/Sort.c
-        lzma/Xz.c lzma/XzCrc64.c lzma/XzCrc64Opt.c lzma/XzDec.c lzma/XzEnc.c lzma/XzIn.c
+        C/7zAlloc.c C/7zArcIn.c C/7zBuf2.c C/7zBuf.c C/7zCrc.c C/7zCrcOpt.c
+        C/7zDec.c C/7zFile.c C/7zStream.c C/Aes.c C/AesOpt.c C/Alloc.c C/Bcj2.c
+        C/Bra86.c C/Bra.c C/BraIA64.c C/CpuArch.c C/Delta.c C/LzFind.c
+        C/Lzma2Dec.c C/Lzma2Enc.c C/Lzma86Dec.c C/Lzma86Enc.c C/LzmaDec.c C/LzmaEnc.c
+        C/LzmaLib.c C/Ppmd7.c C/Ppmd7Dec.c C/Ppmd7Enc.c C/Sha256.c C/Sort.c
+        C/Xz.c C/XzCrc64.c C/XzCrc64Opt.c C/XzDec.c C/XzEnc.c C/XzIn.c
 )
 
 set(SRC_DIRS)
@@ -123,7 +121,7 @@ add_library(${TARGET} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         ${SRC_FILE_LIST})
 
-target_include_directories(${TARGET} PUBLIC lzma)
+target_include_directories(${TARGET} PUBLIC C)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
