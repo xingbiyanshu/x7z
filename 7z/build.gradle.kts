@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.a7z"
+    namespace = "com.sissi.x7z"
     compileSdk = 34
 
     defaultConfig {
@@ -48,7 +48,7 @@ android {
     }
 
     prefab {
-        create("k7z"){
+        create("x7z"){
             headers="src/main/cpp"
         }
     }
@@ -62,9 +62,9 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.sissi.a7z"
-            artifactId = "k7z"
-            version = "1.0-SNAPSHOT"
+            groupId = "com.sissi.x7z"
+            artifactId = "x7z"
+            version = "1.0"
 
             afterEvaluate {
                 from(components["release"])
@@ -72,9 +72,10 @@ publishing {
         }
     }
     repositories {
-        maven {
-            name="prj"
-            url = uri("${rootProject.projectDir}/build/repository")
-        }
+        mavenLocal()
+//        maven {
+//            name="prj"
+//            url = uri("${rootProject.projectDir}/build/repository")
+//        }
     }
 }

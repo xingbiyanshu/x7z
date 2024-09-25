@@ -1,0 +1,1 @@
+SevenZip目录是官方的sdk目录下的SevenZip目录。链接：https://7-zip.org/sdk.html
