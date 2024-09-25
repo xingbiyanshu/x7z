@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "k7z"
+rootProject.name = "x7z"
 include(":app")
 include(":7z")
