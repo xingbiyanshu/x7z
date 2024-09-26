@@ -58,6 +58,6 @@ class MainActivity : AppCompatActivity() {
 //        ins.close()
 
         val encoderWrapper = EncoderWrapper()
-        encoderWrapper.code(file, outputFile)
+        encoderWrapper.code(file, outputFile, null)
     }
 }
