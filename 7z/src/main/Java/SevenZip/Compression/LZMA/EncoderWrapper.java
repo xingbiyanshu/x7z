@@ -49,37 +49,46 @@ public class EncoderWrapper {
         defaultConfig = new Config(2, 1<<23, 128, 1, 3, 0, 2, false);
     }
 
+    public EncoderWrapper(int dictionarySize){
+        encoder = new Encoder();
+        defaultConfig = new Config(2, dictionarySize, 128, 1, 3, 0, 2, false);
+    }
+
     static int threadCount=0;
 
-    public void code(File input, File output, ResultListener resultListener) {
+    public boolean code(File input, File output){
+        try(InputStream ins = new BufferedInputStream(new FileInputStream(input));
+            OutputStream outs = new BufferedOutputStream(new FileOutputStream(output));){
+            encoder.SetAlgorithm(defaultConfig.algorithm);
+            encoder.SetDictionarySize(defaultConfig.dictionarySize);
+            encoder.SetNumFastBytes(defaultConfig.numFastBytes);
+            encoder.SetMatchFinder(defaultConfig.matchFinder);
+            encoder.SetLcLpPb(defaultConfig.lc, defaultConfig.lp, defaultConfig.pb);
+            encoder.SetEndMarkerMode(defaultConfig.endMarkerMode);
+            encoder.WriteCoderProperties(outs);
+            long fileSize = input.length();
+            for (int i=0; i<8; ++i){
+                outs.write((int)(fileSize >>> (8 * i)) & 0xFF);
+            }
+
+            encoder.Code(ins, outs, -1, -1, null);
+
+            outs.flush();
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void codeWithNonBlockManner(File input, File output, ResultListener resultListener) {
         new Thread("lzmaEncoder"+ ++threadCount){
             @Override
             public void run() {
-                try(InputStream ins = new BufferedInputStream(new FileInputStream(input));
-                    OutputStream outs = new BufferedOutputStream(new FileOutputStream(output));){
-                    encoder.SetAlgorithm(defaultConfig.algorithm);
-                    encoder.SetDictionarySize(defaultConfig.dictionarySize);
-                    encoder.SetNumFastBytes(defaultConfig.numFastBytes);
-                    encoder.SetMatchFinder(defaultConfig.matchFinder);
-                    encoder.SetLcLpPb(defaultConfig.lc, defaultConfig.lp, defaultConfig.pb);
-                    encoder.SetEndMarkerMode(defaultConfig.endMarkerMode);
-                    encoder.WriteCoderProperties(outs);
-                    long fileSize = input.length();
-                    for (int i=0; i<8; ++i){
-                        outs.write((int)(fileSize >>> (8 * i)) & 0xFF);
-                    }
-                    encoder.Code(ins, outs, -1, -1, null);
-
-                    outs.flush();
-
-                    if (resultListener!=null){
-                        new Handler(Looper.getMainLooper()).post(() -> resultListener.onEncodeFinished(true));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    if (resultListener!=null){
-                        new Handler(Looper.getMainLooper()).post(() -> resultListener.onEncodeFinished(false));
-                    }
+                boolean success = code(input, output);
+                if (resultListener!=null){
+                    new Handler(Looper.getMainLooper()).post(() -> resultListener.onEncodeFinished(success));
                 }
             }
         }.start();
